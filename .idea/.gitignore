@@ -1,3 +1,7 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+# Игнорировать все файлы в каталоге Introduction to Python/
+Introduction to Python/
+# Игнорировать все файлы в каталоге Conspects/
+Conspects/
