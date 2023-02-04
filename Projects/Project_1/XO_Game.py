@@ -26,7 +26,7 @@ def cast_lots():
         Randomly selects who plays for "X" and who plays for "0"
 
     Returns:
-        tuple(str, str): signs "X" and "0"
+        tuple(str, str): signs "X" or "0" for each player
     """
     player_one, player_two = 0, 0
     while player_one == player_two:
@@ -105,8 +105,8 @@ def get_winning(board_mask):
         (1, 5, 9),  # - \ line
         (3, 5, 7)  # - / line
     )
-    x_cells = {x[0] for x in board_mask.items() if x[1] == 'X'}
-    o_cells = {x[0] for x in board_mask.items() if x[1] == '0'}
+    x_cells = {x[0] for x in board_mask.items() if x[1] == 'X'}  # set of cells closed by "X"
+    o_cells = {x[0] for x in board_mask.items() if x[1] == '0'}  # set of cells closed by "0"
     for line in win_lines:
         if len(x_cells.intersection(line)) == 3 or len(o_cells.intersection(line)) == 3:
             return True
