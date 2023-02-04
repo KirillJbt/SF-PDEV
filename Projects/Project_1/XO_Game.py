@@ -5,10 +5,10 @@ remaining_moves = 9  # remaining number of moves
 cell_number = None
 board = {}  # game board
 board_hint = {}  # a board with hints of cell numbers
-name_player0 = ''
-name_player1 = ''
-who_playing0 = ''
-who_playing1 = ''
+name_player0 = ""
+name_player1 = ""
+who_playing0 = ""
+who_playing1 = ""
 win_cells = {1, 3, 5, 7, 9}
 
 
@@ -17,7 +17,7 @@ def get_board():
         Creates a blank field and a field with hints with cell numbers
     """
     for c in range(1, 10):
-        board[c] = ' '
+        board[c] = " "
         board_hint[c] = str(c)
 
 
@@ -51,9 +51,9 @@ def input_valid(text, rm_cells):
     """
     while True:
         result = input(text)
-        if result.isdigit() and (int(result) in rm_cells or result == '0'):
+        if result.isdigit() and (int(result) in rm_cells or result == "0"):
             return int(result)
-        print('Enter one digit from the remaining cell numbers or 0 for quit!')
+        print("Enter one digit from the remaining cell numbers or 0 for quit!")
 
 
 def board_print():
@@ -61,14 +61,14 @@ def board_print():
     Outputs the playing field to the console in text format. The cells are filled with the corresponding symbols
     containing in dictionaries "board" and "board_hint".
     """
-    print(f'CELL NUMBERS\t\t    BOARD  ')
-    print(f'-------------\t\t-------------')
-    print(f'| {board_hint[7]} | {board_hint[8]} | {board_hint[9]} |\t\t| {board[7]} | {board[8]} | {board[9]} |')
-    print(f'-------------\t\t-------------')
-    print(f'| {board_hint[4]} | {board_hint[5]} | {board_hint[6]} |\t\t| {board[4]} | {board[5]} | {board[6]} |')
-    print(f'-------------\t\t-------------')
-    print(f'| {board_hint[1]} | {board_hint[2]} | {board_hint[3]} |\t\t| {board[1]} | {board[2]} | {board[3]} |')
-    print(f'-------------\t\t-------------')
+    print(f"CELL NUMBERS\t\t    BOARD  ")
+    print(f"-------------\t\t-------------")
+    print(f"| {board_hint[7]} | {board_hint[8]} | {board_hint[9]} |\t\t| {board[7]} | {board[8]} | {board[9]} |")
+    print(f"-------------\t\t-------------")
+    print(f"| {board_hint[4]} | {board_hint[5]} | {board_hint[6]} |\t\t| {board[4]} | {board[5]} | {board[6]} |")
+    print(f"-------------\t\t-------------")
+    print(f"| {board_hint[1]} | {board_hint[2]} | {board_hint[3]} |\t\t| {board[1]} | {board[2]} | {board[3]} |")
+    print(f"-------------\t\t-------------")
 
 
 def get_empty_cells(board_mask):
@@ -146,17 +146,17 @@ def get_best_move(board_mask, player=True):
     """
     rm_cells = get_empty_cells(board_mask)
     game_over = get_winning(board_mask)
-    if game_over and player:  
+    if game_over and player:  # score if human move
         return [-10, None]
-    elif game_over and not player: 
+    elif game_over and not player:  # score if computer move
         return [10, None]
-    elif not rm_cells:
+    elif not rm_cells:  # score if drawn
         return [0, None]
 
     best_move = ''
-    if player:  
+    if player:
         best_score = -float('Inf')
-    else:  
+    else:
         best_score = float('Inf')
 
     for cell in get_empty_cells(board_mask):
@@ -175,30 +175,34 @@ def get_best_move(board_mask, player=True):
 
 
 print('Welcome to the XO game')
-game_type = input_valid('Enter "1" for game Human >-< Computer'
-                        ' or enter "2" for game Human >-< Human'
-                        ' or "3": ', [1, 2, 3])
+game_type = input_valid("Enter \"1\" for game Human >-< Computer "
+                        "or enter \"2\" for game Human >-< Human "
+                        "or \"5\": ", [1, 2, 5])
 
 if game_type == 1:
-    game_type = input_valid('Difficulty of the game: "0" - easy / "1" - normal: ', [0, 1])
+    game_type = input_valid("Difficulty of the game: \"0\" - easy / \"1\" - normal / \"2\" - impossible: ", [0, 1, 2])
+    game_type = 3 if game_type == 2 else game_type
 
 if game_type == 0:
-    name_player0 = input('What is your name? ')
+    name_player0 = input("What is your name? ")
     name_player1 = 'Calculator'
     who_playing0 = 'human'
     who_playing1 = 'ai_easy'
-    delay = 2
 elif game_type == 1:
-    name_player0 = input('What is your name? ')
+    name_player0 = input("What is your name? ")
     name_player1 = 'Computer'
     who_playing0 = 'human'
     who_playing1 = 'ai_normal'
-    delay = 1
 elif game_type == 2:
-    name_player0 = input('Enter the name of the first player: ')
-    name_player1 = input('Enter the name of the second player: ')
+    name_player0 = input("Enter the name of the first player: ")
+    name_player1 = input("Enter the name of the second player: ")
     who_playing0 = 'human'
     who_playing1 = 'human'
+elif game_type == 3:
+    name_player0 = input("What is your name? ")
+    name_player1 = 'Agent Smith'
+    who_playing0 = 'human'
+    who_playing1 = 'ai_impossible'
 else:
     name_player0 = 'Calculator1'
     name_player1 = 'Calculator2'
@@ -222,8 +226,11 @@ players = {
 }
 get_board()
 players[0]['sign'], players[1]['sign'] = cast_lots()
+print("")
 print(f"{players[0]['name']} is playing - {players[0]['sign']}")
+print("")
 print(f"{players[1]['name']} is playing - {players[1]['sign']}")
+print("")
 
 if players[0]['sign'] == 'X':
     whose_move = 0
@@ -241,20 +248,23 @@ while abs(players[0]['win'] - players[1]['win']) < 3:
     print("")
     remaining_cells = get_empty_cells(board)
     if players[whose_move]['who_playing'] == 'human':  # player's move
-        cell_number = input_valid('Enter the cell number (0 for quit): ', remaining_cells)
+        cell_number = input_valid("Enter the cell number (0 for quit): ", remaining_cells)
         if cell_number == 0:  # exiting the game
-            if input_valid('Are you giving up?(1-Yes/0-No): ', [0, 1]):
+            if input_valid("Are you giving up?(1-Yes/0-No): ", [0, 1]):
+                print("")
                 print("The game is over")
                 break
             continue
     elif players[whose_move]['who_playing'] == 'ai_easy':  # computer's move difficulty: easy
         cell_number = ai_easy(remaining_cells)
-        time.sleep(random.uniform(0.5, 2))
+        time.sleep(random.uniform(1, 2))
     elif players[whose_move]['who_playing'] == 'ai_normal':  # computer's move difficulty: normal
         if remaining_moves >= 8:
             cell_number = random.choice(tuple(win_cells.intersection(remaining_cells)))
         else:
             cell_number = get_best_move(board)[1]
+    elif players[whose_move]['who_playing'] == 'ai_impossible':  # computer's move difficulty: impossible
+        cell_number = get_best_move(board)[1]
 
     board[cell_number] = players[whose_move]['sign']
     board_hint[cell_number] = ' '
@@ -277,7 +287,7 @@ while abs(players[0]['win'] - players[1]['win']) < 3:
     if remaining_moves == 0:
         board_print()
         print("The game is drawn")
-        print('')
+        print("")
         remaining_moves = 9
         get_board()
         players[0]['sign'], players[1]['sign'] = cast_lots()
