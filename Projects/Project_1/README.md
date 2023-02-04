@@ -16,4 +16,4 @@ The field size is assumed to be 3x3.
 
 Example of printing a field to the console:
 
-![img.png](img.png)
+# <center>![img_1.png](img_1.png)
