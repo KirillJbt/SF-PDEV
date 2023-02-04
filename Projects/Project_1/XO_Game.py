@@ -12,6 +12,23 @@ who_playing1 = ""
 win_cells = {1, 3, 5, 7, 9}
 
 
+def get_welcome():
+    print("")
+    print("\t\tWelcome to the XO game")
+    print("")
+    print("To move to the desired cell, enter its number.")
+    print("")
+    print(f"\t\t\tCELL NUMBERS")
+    print(f"\t\t\t-------------")
+    print(f"\t\t\t| 7 | 8 | 9 |")
+    print(f"\t\t\t-------------")
+    print(f"\t\t\t| 4 | 5 | 6 |")
+    print(f"\t\t\t-------------")
+    print(f"\t\t\t| 1 | 2 | 3 |")
+    print(f"\t\t\t-------------")
+    print("")
+
+
 def get_board():
     """
         Creates a blank field and a field with hints with cell numbers
@@ -174,7 +191,8 @@ def get_best_move(board_mask, player=True):
     return [best_score, best_move]
 
 
-print('Welcome to the XO game')
+get_welcome()
+
 game_type = input_valid("Enter \"1\" for game Human >-< Computer "
                         "or enter \"2\" for game Human >-< Human "
                         "or \"5\": ", [1, 2, 5])
