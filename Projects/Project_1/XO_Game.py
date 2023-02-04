@@ -298,10 +298,15 @@ while abs(players[0]['win'] - players[1]['win']) < 3:
         else:
             whose_move = 1
 
-if players[0]['win'] > players[1]['win']:
-    champion = players[0]['name']
-else:
-    champion = players[1]['name']
-
-if cell_number != 0:
+if cell_number != 0 and players[1]['who_playing'] == 'human':
+    if players[0]['win'] > players[1]['win']:
+        champion = players[0]['name']
+    else:
+        champion = players[1]['name']
     print(f"Congratulations {champion} is the CHAMPION!!!")
+
+elif cell_number != 0 and players[1]['who_playing'] != 'human':
+    if players[0]['win'] > players[1]['win']:
+        print(f"Congratulations {players[0]['name']} is the CHAMPION!!!")
+    else:
+        print(f"{players[0]['name']}, you've lost!")
