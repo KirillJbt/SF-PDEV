@@ -131,7 +131,7 @@ def get_winning(board_mask):
     return False
 
 
-def ai_easy(empty_cells):
+def get_move_ai_easy(empty_cells):
     """
         "AI" implementing computer moves, as a second player, at the "easy" difficulty level.
     The selection is made randomly from the list of free cells.
@@ -162,13 +162,13 @@ def get_best_move(board_mask, player=True):
     Returns: list: [Score(int), Number(int)] A list of two elements: Score - the number of points per turn;
                                                                     Number - the number with the cell number
     """
-    rm_cells = get_empty_cells(board_mask)
+    empty_cells = get_empty_cells(board_mask)
     game_over = get_winning(board_mask)
     if game_over and player:  # score if human move
         return [-10, None]
     elif game_over and not player:  # score if computer move
         return [10, None]
-    elif not rm_cells:  # score if drawn
+    elif not empty_cells:  # score if drawn
         return [0, None]
 
     best_move = ''
@@ -177,17 +177,17 @@ def get_best_move(board_mask, player=True):
     else:
         best_score = float('Inf')
 
-    random.shuffle(rm_cells)
-    for cell in rm_cells:
+    random.shuffle(empty_cells)  # so that there are no repetitive moves
+    for cell in empty_cells:
         board_mask[cell] = players[player]['sign']
-        res = get_best_move(board_mask, not player)[0]
+        result = get_best_move(board_mask, not player)[0]
         board_mask[cell] = ' '
 
-        if player and res > best_score:
-            best_score = res
+        if player and result > best_score:
+            best_score = result
             best_move = cell
-        elif not player and res < best_score:
-            best_score = res
+        elif not player and result < best_score:
+            best_score = result
             best_move = cell
 
     return [best_score, best_move]
@@ -195,12 +195,12 @@ def get_best_move(board_mask, player=True):
 
 get_welcome()
 
-game_type = input_valid("Enter \"1\" for game Human >-< Computer "
-                        "or enter \"2\" for game Human >-< Human "
-                        "or \"5\": ", [1, 2, 5])
+game_type = input_valid('Enter "1" for game Human >-< Computer '
+                        'or enter "2" for game Human >-< Human '
+                        'or "5": ', [1, 2, 5])
 
 if game_type == 1:
-    game_type = input_valid("Difficulty of the game: \"0\" - easy / \"1\" - normal / \"2\" - impossible: ", [0, 1, 2])
+    game_type = input_valid('Difficulty of the game: "0" - easy / "1" - normal / "2" - impossible: ', [0, 1, 2])
     game_type = 3 if game_type == 2 else game_type
 
 if game_type == 0:
@@ -276,7 +276,7 @@ while abs(players[0]['win'] - players[1]['win']) < 3:
                 break
             continue
     elif players[whose_move]['who_playing'] == 'ai_easy':  # computer's move difficulty: easy
-        cell_number = ai_easy(remaining_cells)
+        cell_number = get_move_ai_easy(remaining_cells)
         time.sleep(random.uniform(1, 2))
     elif players[whose_move]['who_playing'] == 'ai_normal':  # computer's move difficulty: normal
         if remaining_moves >= 7:
