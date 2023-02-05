@@ -99,6 +99,7 @@ def get_empty_cells(board_mask):
         list: List with empty cell numbers
     """
     cells_empty = [x[0] for x in list(board_mask.items()) if x[1] == ' ']
+    # random.shuffle(cells_empty)
     return cells_empty
 
 
@@ -176,7 +177,8 @@ def get_best_move(board_mask, player=True):
     else:
         best_score = float('Inf')
 
-    for cell in get_empty_cells(board_mask):
+    random.shuffle(rm_cells)
+    for cell in rm_cells:
         board_mask[cell] = players[player]['sign']
         res = get_best_move(board_mask, not player)[0]
         board_mask[cell] = ' '
@@ -277,7 +279,7 @@ while abs(players[0]['win'] - players[1]['win']) < 3:
         cell_number = ai_easy(remaining_cells)
         time.sleep(random.uniform(1, 2))
     elif players[whose_move]['who_playing'] == 'ai_normal':  # computer's move difficulty: normal
-        if remaining_moves >= 8:
+        if remaining_moves >= 7:
             cell_number = random.choice(tuple(win_cells.intersection(remaining_cells)))
         else:
             cell_number = get_best_move(board)[1]
