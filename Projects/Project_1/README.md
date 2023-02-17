@@ -1,6 +1,6 @@
-# <center>Tic—Tac-Toe
+# <center>Tic-Tac-Toe
 
-What did people do in boring lessons before the era of mobile phones with the Internet, a bunch of apps and other time eaters? Yes, a lot of things, in general. However, one of these entertainments you know for sure is ["Tic—Tac-Toe"](https://ru.wikipedia.org/wiki/Крестики-нолики)!
+What did people do in boring lessons before the era of mobile phones with the Internet, a bunch of apps and other time eaters? Yes, a lot of things, in general. However, one of these entertainments you know for sure is ["Tic-Tac-Toe"](https://ru.wikipedia.org/wiki/Крестики-нолики)!
 
 Do you understand what the course of our thoughts is going to? We will try to create our first computer game!
 
