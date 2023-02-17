@@ -16,7 +16,7 @@ class BoardOutsideException(GameException):
     Класс исключения при выстредле за границы игровой доски
     """
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Координаты за пределами игрового поля.'
 
 
@@ -25,7 +25,7 @@ class OccupiedCellException(GameException):
     Класс исключения при выстреле в занятую клетку
     """
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'По этим координатам выстрел уже был.'
 
 
@@ -34,7 +34,7 @@ class CoordinateTypeException(GameException):
     Класс исключения при ошибочном формате координат
     """
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'Неверный формат координат'
 
 
@@ -44,7 +44,7 @@ class BoardSizeException(GameException):
     """
 
     def __str__(self):
-        return f'Игровая доска не должна быть меньше 5х5 и не больше 16х16'
+        return f'Игровая доска не должна быть меньше 5х5 и не больше 10х10'
 
 
 class WrongPositionShipException(GameException):
@@ -54,26 +54,32 @@ class WrongPositionShipException(GameException):
 
 
 class Cell:
-    """
-    Класс клеток на поле. Каждая клетка описывается параметрами:
+    """Класс клеток на поле. Каждая клетка описывается параметрами:
     
-        row - номер строки
-        column - номер столбца
+    Attributes:
+    ----------
+        row: int
+            Номер строки
+
+        column: int
+            Номер столбца
         
-    Методы:
-    
-    __eq__ - 
-    __repr__ - 
+    Methods:
+    -------
+        __eq__(row, column)
+            Возвращает результат сравнения координат экземпляров класса
+        __repr__()
+            Метод возвращает строку, используя которую, можно получить экземпляр класса
     """
 
-    def __init__(self, row, column):
+    def __init__(self, row: int, column: int) -> None:
         self.row = row
         self.column = column
 
-    def __eq__(self, other):
+    def __eq__(self, other: (int, int)) -> bool:
         return self.row == other.row and self.column == other.column
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'Cell({self.row}, {self.column})'
 
 
@@ -81,26 +87,41 @@ class Ship:
     """
     Класс корабль на игровом поле.
     
-    Параметры:
+    Attributes:
+    ----------
+        coord:
+            Координаты клетки, где размещён нос корабля, от нее идет отсчет клеток, на длину корабля.
+
+        length: int
+            Длина корабля.
+
+        orientation: int
+            Ориентация корабля(0 - горизонтальная/ 1 - вертикальная)
+
+        health: int
+            Количество жизней. В начале игры соответствует длине корабля.
     
-    coord - координаты клетки, где размещён нос корабля.
-    length - длина корабля.
-    orientation - ориентация корабля(0 - горизонтальная/ 1 - вертикальная)
-    health - количество жизней. В начале игры соответствует длине корабля.
-    
-    Метод:
-    
-    cells - возвращает список объектов класса Cell с координатами всех клеток на которых расположен корабль.
+    Methods:
+    -------
+        cells()
+            Возвращает список экземпляров класса Cell с координатами всех клеток на которых расположен корабль.
     """
 
-    def __init__(self, coord, length, orientation):
+    def __init__(self, coord: (int, int), length: int, orientation: int) -> None:
         self.coord = coord
         self.length = length
         self.orientation = orientation
         self.health = length
 
     @property
-    def cells(self):
+    def cells(self) -> list:
+        """Создает список с координатами клеток в которых расположен корабль. От начальной клетки, в зависимоти
+        оториентации. координата следующей клетки меняется на одну строку или на один столбец и до достижения длины
+        корабля.
+
+        Returns:
+            list: Возвращает список экземпляров класса Cell с координатами клеток корабля
+        """
         ship_coords = []
         for cell in range(self.length):
             basic_row = self.coord.row
@@ -112,9 +133,6 @@ class Ship:
             ship_coords.append(Cell(basic_row, basic_column))
 
         return ship_coords
-
-    def hit_check(self, cell):
-        return cell in self.cells
 
 
 class Board:
@@ -198,8 +216,11 @@ class Board:
         Если аргумент visibility не задан, оласть вокруг корабля остается заполненной пробелами.
 
         Args:
-            ship (Ship): корабль
-            visibility (bool, optional): Флаг видимости точек вокруг корабля. Defaults to False.
+            ship (Ship):
+                Корабль
+
+            visibility (bool, optional):
+                Флаг видимости точек вокруг корабля. Defaults to False.
         """
         around_ship = [
             (-1, -1), (-1, 0), (-1, 1),
@@ -221,16 +242,14 @@ class Board:
             cell (Cell): Объект класса Cell с координатами клетки.
 
         Returns:
-            bool: Возвращает True если координаты выходят за границы доски,
-                иначе возвращает False
+            bool: Возвращает True если координаты выходят за границы доски, иначе возвращает False
         """
         return not ((0 <= cell.row < self.size) and (0 <= cell.column < self.size))
 
     def shot(self, cell: Cell) -> bool:
-        """Делает "выстрел" по координатам на доске. 
+        """Делает "выстрел" по координатам на доске.
         При попадании в корабль или промахе выводит соответствующее сообщение.
-        В параметре mask меняет состояние клетки на "Х".
-        При попадании возвращает True, при промахе False.
+        В параметре mask меняет состояние клетки на "Х". При попадании возвращает True, при промахе False.
         
         Args:
             cell (Cell): Объект класса Cell с координатами клетки.
@@ -284,14 +303,15 @@ class BoardPrint:
     board_computer: Board
         Игровая доска для компьютера.
         
-    size: int Размер игровой доски(не должна быть меньше 5х5 и не больше 10х10). Может принимать значение от 5 до 10
-    включительно. По умолчанию принимает значение константы BOARD_SIZE
+    size: int
+        Размер игровой доски(не должна быть меньше 5х5 и не больше 10х10).
+        Может принимать значение от 5 до 10 включительно.
+        По умолчанию принимает значение константы BOARD_SIZE
         
     Methods
     -------
-    __str__()
-        Формирует игровые доски, необходимой формы для паравильной визуализации. Возвращает результат в виде строки.
-    
+        __str__()
+            Формирует игровые доски, необходимой формы для паравильной визуализации. Возвращает результат в виде строки.
     """
 
     def __init__(self, board_user, board_computer, size=BOARD_SIZE):
@@ -330,7 +350,6 @@ class Player:
         
         move() Делает ход игрока. Возвращает True, если этому игроку нужен повторный ход (например, если он выстрелом
         подбил корабль).
-    
     """
 
     def __init__(self, board, opponent):
@@ -365,9 +384,11 @@ class Player:
 class AI(Player):
     """Наследующий класс Player для компьютера.
     
-    Methods: ------- requesting_coordinates() Переопределенный метод для случайного выбора координат для "выстрела".
-    Возвращает объект класса Cell со случайными координатами.
-        
+    Methods:
+    -------
+        requesting_coordinates()
+            Переопределенный метод для случайного выбора координат для "выстрела".
+            Возвращает объект класса Cell со случайными координатами.
     """
 
     def requesting_coordinates(self) -> Cell:
@@ -386,8 +407,11 @@ class AI(Player):
 class User(Player):
     """Наследующий класс Player для пользователя.
 
-    Methods: ------- requesting_coordinates() Переопределенный метод для ввода координат пользователем. Возвращает
-    объект класса Cell с полученными координатами.
+    Methods:
+    -------
+        requesting_coordinates()
+            Переопределенный метод для ввода координат пользователем.
+            Возвращает объект класса Cell с полученными координатами.
     """
 
     def requesting_coordinates(self) -> Cell:
@@ -453,8 +477,6 @@ class Game:
             
         start():
             Запускает игру.
-
-    
     """
 
     def __init__(self, size: int = BOARD_SIZE) -> None:
