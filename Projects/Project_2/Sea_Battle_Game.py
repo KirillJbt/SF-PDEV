@@ -123,7 +123,7 @@ class Board:
     Attributes:
     ----------
         size: int
-            размер игровой доски(не должна быть меньше 5х5 и не больше 16х16)
+            размер игровой доски(не должна быть меньше 5х5 и не больше 10х10)
 
         hide: bool
             скрывает не подбитые корабли на доске компьютера. По умолчанию False.
@@ -160,8 +160,8 @@ class Board:
         
     """
 
-    def __init__(self, hide: bool = False, size: int = 6):
-        if 5 > size > 16:
+    def __init__(self, hide: bool = False, size: int = BOARD_SIZE):
+        if 5 > size > 10:
             raise BoardSizeException
         self.size = size
         self.hide = hide
@@ -284,7 +284,7 @@ class BoardPrint:
     board_computer: Board
         Игровая доска для компьютера.
         
-    size: int Размер игровой доски(не должна быть меньше 5х5 и не больше 16х16). Может принимать значение от 5 до 16
+    size: int Размер игровой доски(не должна быть меньше 5х5 и не больше 10х10). Может принимать значение от 5 до 10
     включительно. По умолчанию принимает значение константы BOARD_SIZE
         
     Methods
@@ -301,13 +301,13 @@ class BoardPrint:
 
     def __str__(self) -> str:
         size = self.size
-        result = "    "
-        result += "   ".join(LETTER_INDEX[:size]) + "\t" * 3 + "   ".join(LETTER_INDEX[:size]) + "\n"
-        result += "  -" + "----" * size + "\t\t" + "  -" + "----" * size + "\n"
+        result = "     "
+        result += "   ".join(LETTER_INDEX[:size]) + "\t\t\t\t " + "   ".join(LETTER_INDEX[:size]) + "\n"
+        result += "   -" + "----" * size + "\t" * 2 + "   -" + "----" * size + "\n"
         for i, row in enumerate(zip(self.board_user, self.board_computer)):
-            result += f"{i + 1} | " + " | ".join(row[0]) + " |" + "\t\t" + f"{i + 1} | " + " | ".join(
+            result += f"{i + 1:2} | " + " | ".join(row[0]) + " |" + "\t\t" + f"{i + 1:2} | " + " | ".join(
                 row[1]) + " |" + "\n"
-            result += "  -" + "----" * size + "\t\t" + "  -" + "----" * size + "\n"
+            result += "   -" + "----" * size + "\t\t" + "   -" + "----" * size + "\n"
 
         return result
 
@@ -430,7 +430,7 @@ class Game:
     Attributes:
     ----------
         size: int
-            размер игровой доски(не должна быть меньше 5х5 и не больше 16х16)
+            размер игровой доски(не должна быть меньше 5х5 и не больше 10х10)
         
     Methods:
     -------
@@ -495,11 +495,12 @@ class Game:
             None: В случае невозможности расстановки кораблей.
             Board: Игровая доска с расставленными, случайным образом, кораблями.
         """
-        ships = [3, 2, 2, 1, 1, 1, 1]
+        ships = [4, 3, 2, 3, 2, 2, 1, 1, 1, 1]
+        begin = 9 - self.size if self.size < 10 else 0
         board = Board(hide=hide, size=self.size)
         size = self.size - 1
         attempts = 0
-        for ship_length in ships:
+        for ship_length in ships[begin::]:
             while True:
                 attempts += 1
                 if attempts > 2000:  # Прерывает бесконечный цикл при привышении количества попыток расставить корабли
@@ -565,6 +566,8 @@ class Game:
         о победившем игроке и игровой цикл останавливается.
         """
         num = self.cast_lots()
+        first = "Пользователь" if num else "Компьютер"
+        print(f"Первым ходит {first}!")
         while True:
             print(BoardPrint(self.player_user.board, self.player_ai.board))
             if num % 2 != 0:
