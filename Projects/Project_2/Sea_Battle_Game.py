@@ -179,7 +179,7 @@ class Board:
     """
 
     def __init__(self, hide: bool = False, size: int = BOARD_SIZE):
-        if 5 > size > 10:
+        if BOARD_SIZE < 5 or BOARD_SIZE > 10:
             raise BoardSizeException
         self.size = size
         self.hide = hide
