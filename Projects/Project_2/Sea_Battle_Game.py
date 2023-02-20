@@ -1,4 +1,5 @@
 from random import randint
+from abc import ABC
 from typing import Tuple
 
 LETTER_INDEX = "АБВГДЕЖЗИКЛМНОПРСТ"
@@ -178,8 +179,15 @@ class Board:
         
     """
 
+    MIN_SIZE_BOARD = 5
+    MAX_SIZE_BOARD = 10
+
+    @classmethod
+    def validate(cls, size):
+        return cls.MIN_SIZE_BOARD > size or cls.MAX_SIZE_BOARD < size
+
     def __init__(self, hide: bool = False, size: int = BOARD_SIZE):
-        if 5 > size > 10:
+        if self.validate(size):
             raise BoardSizeException
         self.size = size
         self.hide = hide
@@ -332,7 +340,7 @@ class BoardPrint:
         return result
 
 
-class Player:
+class Player(ABC):
     """Класс описывающия действия игроков во время игры.
         
     Attributes
@@ -352,9 +360,9 @@ class Player:
         подбил корабль).
     """
 
-    def __init__(self, board, opponent):
-        self.board = board
-        self.opponent = opponent
+    def __init__(self, board: Board, opponent: Board):
+        self.board: Board = board
+        self.opponent: Board = opponent
 
     def requesting_coordinates(self) -> None:
         """Запрашивает координаты для "выстрела". Должен быть реализован в наследующих классах.
@@ -391,6 +399,9 @@ class AI(Player):
             Возвращает объект класса Cell со случайными координатами.
     """
 
+    def __init__(self, board: Board, opponent: Board):
+        super().__init__(board, opponent)
+
     def requesting_coordinates(self) -> Cell:
         """Рандомно определяет координаты в формате (строка, столбец), согласно размерам игровой доски. Выводит
         сообщение с координатами, приведенными в буквенно-числовой вид. Создает экземпляр класса Cell с этими
@@ -413,6 +424,9 @@ class User(Player):
             Переопределенный метод для ввода координат пользователем.
             Возвращает объект класса Cell с полученными координатами.
     """
+
+    def __init__(self, board: Board, opponent: Board):
+        super().__init__(board, opponent)
 
     def requesting_coordinates(self) -> Cell:
         """Запрашивает у пользователя координаты для выстрела. Формат ввода координаты привычный для пользователя
